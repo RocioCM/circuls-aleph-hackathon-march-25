@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  scrollbar-width: thin;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+html,
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--font-color);
+
+  /*  Prevents the active color blue native for tappable things and the search hotkey browsers native  */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#__next,
+body {
+  min-height: 100vh;
+  width: 100%;
+}
+
+#__next {
+  min-height: 100vh;
+  overflow-y: auto;
+
+  --animate-duration: 500ms; /* animate.css override */
+}
+
+:root {
+  /* COLORS */
+  --main-color: var(--colors-palette-p1);
+  --secondary-color: var(--colors-palette-p2);
+  --background-color: var(--colors-neutrals-n0);
+  --dark-background-color: var(--colors-neutrals-n10);
+  --font-color: var(--colors-neutrals-n10);
+  --secondary-font-color: var(--colors-neutrals-n4);
+
+  /* FONTS */
+  --regular: 400;
+  --medium: 500;
+  --semibold: 600;
+  --bold: 700;
+
+  --main-font: var(--font-harmonia-sans-pro-cyr);
+  --titles-font: var(--font-clash-display), var(--font-family);
+  --font-family: var(--main-font), -apple-system, BlinkMacSystemFont, Segoe UI,
+    Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+    sans-serif;
+  font-size: 16px;
+
+  --font-h1: var(--bold) var(--text-h1-r) / 1.02 var(--titles-font);
+  --font-h2: var(--regular) var(--text-h2-r) / normal var(--font-family);
+  --font-h3: var(--regular) var(--text-h3-r) / normal var(--font-family);
+  --font-h4: var(--regular) var(--text-h4-r) / normal var(--font-family);
+  --font-h5: var(--regular) var(--text-h5-r) / normal var(--font-family);
+  --font-h6: var(--regular) var(--text-h6-r) / normal var(--font-family);
+  --font-p: var(--regular) var(--text-p-r) / normal var(--font-family);
+  --font-s: var(--regular) var(--text-s-r) / normal var(--font-family);
+
+  /* BREAKPOINTS (reference for media-queries)  */
+  --mobile: 320px;
+  --tablet: 768px;
+  --desktop: 1024px;
+  --large-desktop: 1400px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* -- Remove input arrows -- */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* -- Remove input arrows -- */
+/* Firefox */
+input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* -- Default fonts -- */
+
+h1,
+.h1 {
+  font: var(--font-h1);
+}
+
+h2,
+.h2 {
+  font: var(--font-h2);
+}
+
+h3,
+.h3 {
+  font: var(--font-h3);
+}
+
+h4,
+.h4 {
+  font: var(--font-h4);
+}
+
+h5,
+.h5 {
+  font: var(--font-h5);
+}
+
+h6,
+.h6 {
+  font: var(--font-h6);
+}
+
+p,
+.p {
+  font: var(--font-p);
+}
+
+.s {
+  font: var(--font-s);
+}
+
+/* -- Responsive REM -- */
+@media screen and (max-width: 320px) {
+  :root {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  :root {
+    font-size: 18px;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  :root {
+    font-size: 20px;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  :root {
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  :root {
+    font-size: 24px;
+  }
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Contenedor del dropdown */
+.pac-container {
+  background-color: #fff;
+  border: 0px solid #ddd;
+  border-radius: 0.625rem;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family);
+}
+
+/* Cada fila de opción */
+.pac-item {
+  padding: 0.8rem 0.8rem;
+  font-size: 0.8rem;
+  border-bottom: 0.5px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Última opción sin borde inferior */
+.pac-item:last-child {
+  border-bottom: none;
+}
+
+/* Estilo del texto de la opción */
+.pac-item .pac-item-query {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Hover sobre las opciones */
+.pac-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Ocultar el ícono predeterminado */
+.pac-icon {
+  display: none !important;
+}
+
+/* Estilizar las opciones para agregar un nuevo ícono */
+.pac-item {
+  padding-left: 40px; /* Espacio para el nuevo ícono */
+  position: relative;
+}
+
+.pac-item::before {
+  content: '📍'; /* Puedes usar un emoji o cambiar por un ícono SVG */
+  position: absolute;
+  left: 10px;
+  font-size: 20px;
+  color: #399150; /* Color personalizado */
+}
