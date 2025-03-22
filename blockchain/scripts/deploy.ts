@@ -3,7 +3,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import logger from '../utils/logger';
 import { getEnv } from '../utils/env';
 
-const CONTRACT_NAME = 'MyContract';
+const CONTRACT_NAME = 'CirculsDApp';
 
 type Contract = Awaited<
   ReturnType<HardhatRuntimeEnvironment['ethers']['deployContract']>
@@ -62,14 +62,18 @@ async function main() {
   const isRealNetwork = !!network && network !== 'localhost';
 
   // Deploy contracts
-  const baseContract = await deployContract(CONTRACT_NAME);
+  const baseContract = await deployContract(CONTRACT_NAME, [
+    getEnv('WLD_CONTRACT_ADDRESS'),
+  ]);
   const baseContractAddress = await baseContract.getAddress();
 
   // Verify contracts
   if (isRealNetwork) {
     logger.info('Verifying contracts...');
 
-    await verifyContract(CONTRACT_NAME, baseContract);
+    await verifyContract(CONTRACT_NAME, baseContract, [
+      getEnv('WLD_CONTRACT_ADDRESS'),
+    ]);
   }
 
   logger.info("Contract's addresses:");

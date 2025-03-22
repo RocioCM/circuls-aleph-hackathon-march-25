@@ -7,8 +7,8 @@
     "coverage": "hardhat coverage",
     "node": "hardhat node",
     "deployLocal": "hardhat run scripts/deploy.ts --network localhost",
-    "deployTest": "hardhat run scripts/deploy.ts --network optimismSepolia",
-    "deployProd": "hardhat run scripts/deploy.ts --network optimisticEthereum"
+    "deployTest": "hardhat run scripts/deploy.ts --network sepoliaEth",
+    "deployProd": "hardhat run scripts/deploy.ts --network worldChain"
   },
   "author": "",
   "license": "ISC",

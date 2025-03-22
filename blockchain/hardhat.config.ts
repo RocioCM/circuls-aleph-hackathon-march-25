@@ -17,31 +17,46 @@ const config: HardhatUserConfig = {
       url: 'http://127.0.0.1:8545',
     },
 
-    // TESTNET
-    optimismSepolia: {
-      url: `https://sepolia.optimism.io`, // RPC url
-      chainId: 11155420,
+    // TESTNET: World Chain Sepolia
+    worldChainSepolia: {
+      url: `https://worldchain-sepolia.g.alchemy.com/public`, // RPC url
+      chainId: 4801,
       accounts: [`0x${getEnv('PRIVATE_KEY')}`],
     },
 
-    // MAINNET
-    optimisticEthereum: {
-      url: `https://optimism-mainnet.infura.io`, // RPC url
-      chainId: 10,
+    // MAINNET: World Chain
+    worldChain: {
+      url: `https://worldchain-mainnet.g.alchemy.com/public`, // RPC url
+      chainId: 480,
+      accounts: [`0x${getEnv('PRIVATE_KEY')}`],
+    },
+
+    sepoliaEth: {
+      url: 'https://sepolia.drpc.org',
+      chainId: 11155111,
       accounts: [`0x${getEnv('PRIVATE_KEY')}`],
     },
   },
   etherscan: {
     apiKey: {
-      optimismSepolia: getEnv('ETHERSCAN_API_KEY'),
+      sepoliaEth: getEnv('ETHERSCAN_API_KEY'),
+      worldChainSepolia: getEnv('ETHERSCAN_API_KEY'),
     },
     customChains: [
       {
-        network: 'optimismSepolia',
-        chainId: 11155420,
+        network: 'sepoliaEth',
+        chainId: 11155111,
         urls: {
-          apiURL: 'https://api-sepolia-optimistic.etherscan.io/api',
-          browserURL: 'https://sepolia-optimistic.etherscan.io',
+          apiURL: 'https://api-sepolia.etherscan.io/api',
+          browserURL: 'https://sepolia.etherscan.io',
+        },
+      },
+      {
+        network: 'worldChainSepolia',
+        chainId: 4801,
+        urls: {
+          apiURL: 'https://worldchain-sepolia.g.alchemy.com/v2',
+          browserURL: 'https://worldchain-sepolia.explorer.alchemy.com/',
         },
       },
     ],
