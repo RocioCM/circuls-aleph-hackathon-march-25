@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = '0x1B7Bd42FA0a443DC3Bd15Aa0A230e1dD5c656373';
+export const CONTRACT_ADDRESS = '0x52ef0a91E6a7Ef22BdACB415D53DCe8020a73DFD';
 
 export const CONTRACT_ABI = [
   {inputs: [], stateMutability: 'nonpayable', type: 'constructor'},
@@ -133,6 +133,15 @@ export const CONTRACT_ABI = [
   {
     inputs: [{internalType: 'uint256', name: 'containerId', type: 'uint256'}],
     name: 'recycleContainer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {internalType: 'uint256[]', name: 'containerIds', type: 'uint256[]'},
+    ],
+    name: 'recycleMultipleContainers',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
