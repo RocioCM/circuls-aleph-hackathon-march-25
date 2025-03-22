@@ -1,20 +1,21 @@
-import React, {useState} from 'react';
-import {ProducerViewType} from './types';
-import Input from '@/common/components/Inputs/Input';
-import InputDropdown from '@/common/components/Inputs/InputDropdown';
-import Button from '@/common/components/Button';
-import {CONTRACT_ABI, CONTRACT_ADDRESS} from '@/common/constants/abi';
-import {MiniKit} from '@worldcoin/minikit-js';
+import React, { useState } from "react";
+import { ProducerViewType } from "./types";
+import Input from "@/common/components/Inputs/Input";
+import InputDropdown from "@/common/components/Inputs/InputDropdown";
+import Button from "@/common/components/Button";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
+import { MiniKit } from "@worldcoin/minikit-js";
+import InputNumber from "@/common/components/Inputs/InputNumber";
 
 const ProducerView: ProducerViewType = ({}) => {
-  const [codes, setCodes] = useState<{code: string; deposit: number}[]>([]);
-  const [code, setCode] = useState<string>('');
+  const [codes, setCodes] = useState<{ code: number; deposit: number }[]>([]);
+  const [code, setCode] = useState<number | "">("");
   const [deposit, setDeposit] = useState<number>(1);
 
   const handleAdd = () => {
-    if (code.length && !codes.some(({code: c}) => c === code)) {
-      setCodes((prev) => [...prev, {code, deposit}]);
-      setCode('');
+    if (code && !codes.some(({ code: c }) => c === code)) {
+      setCodes((prev) => [...prev, { code, deposit }]);
+      setCode("");
     }
   };
 
@@ -26,24 +27,30 @@ const ProducerView: ProducerViewType = ({}) => {
     }
   };
 
-  const sendTransaction = async (code: string, deposit: number) => {
+  const sendTransaction = async (code: number, deposit: number) => {
     if (!MiniKit.isInstalled()) {
-      console.log('MiniKit not installed');
+      console.log("MiniKit not installed");
       return;
     }
 
-    const {commandPayload, finalPayload} =
+    const args = [code.toString(), deposit.toString()];
+
+    console.log("args", args);
+    // Primero, conecta la wallet si aún no lo está
+    await connectWallet();
+
+    const { commandPayload, finalPayload } =
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: CONTRACT_ADDRESS,
-            abi: CONTRACT_ABI,
-            functionName: 'registerContainer',
-            args: [code, deposit],
+            abi: JSON.stringify(CONTRACT_ABI) as any,
+            functionName: "registerContainer",
+            args: args,
           },
         ],
       });
-    console.log('commandPayload', commandPayload, finalPayload);
+    console.log("commandPayload", commandPayload, finalPayload);
 
     // if (payload.status === 'error') {
     // 	console.error('Error sending transaction', payload)
@@ -61,15 +68,15 @@ const ProducerView: ProducerViewType = ({}) => {
         blockchain associated with their respective deposit.
       </p>
       <div className="flex gap-4 items-end">
-        <Input
-          placeholder="ABC123"
+        <InputNumber
+          placeholder="123456"
           label="Unique ID"
           showFloatingLabel={false}
           name="code"
           value={code}
           handleChange={(_, value) => setCode(value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleAdd();
             }
           }}
@@ -80,9 +87,9 @@ const ProducerView: ProducerViewType = ({}) => {
           value={deposit}
           name="deposit"
           options={[
-            {label: '1 Circoin', value: 1},
-            {label: '1.25 Circoins', value: 1.25},
-            {label: '1.5 Circoins', value: 1.5},
+            { label: "1 Circoin", value: 1 },
+            { label: "1.25 Circoins", value: 1.25 },
+            { label: "1.5 Circoins", value: 1.5 },
           ]}
           className="!w-[40%]"
         />

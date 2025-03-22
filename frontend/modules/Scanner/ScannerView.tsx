@@ -7,6 +7,7 @@ import Img from "@/common/components/Img";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "@/common/components/BackButton";
+import QRScanner from "@/common/components/QRScanner/QRScanner";
 
 const ScannerView: ScannerViewType = ({
   wizardStep,
@@ -154,7 +155,7 @@ const ScannerView: ScannerViewType = ({
     <div className="relative w-screen h-screen bg-black overflow-hidden">
       <BackButton />
       {/* Cámara ocupando todo el fondo */}
-      <QRReader onResult={handleResult} className="absolute inset-0" />
+      <QRScanner onResult={handleResult} className="absolute inset-0" />
 
       {/* Spinner centrado cuando scanningLock = true */}
       {scanningLock && wizardStep < 6 && (
@@ -199,7 +200,7 @@ const ScannerView: ScannerViewType = ({
               Scan Again
             </Button>
             <Button
-              className="border border-gray-300 text-gray-700 bg-white text-green-600"
+              className="border border-gray-300  bg-white text-green-600"
               width="w-[150px]"
               onClick={() => router.push("/recycler/home")}
             >

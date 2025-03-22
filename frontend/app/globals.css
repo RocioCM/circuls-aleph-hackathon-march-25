@@ -177,3 +177,12 @@ p,
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Oculta el botón de reproducción en navegadores basados en WebKit (Chrome, Safari, Edge) */
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}

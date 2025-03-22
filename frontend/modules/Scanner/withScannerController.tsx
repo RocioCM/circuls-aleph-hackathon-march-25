@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ScannerViewType, ScannerViewProps } from "./types";
+import { MiniKit } from "@worldcoin/minikit-js";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
 
 /**
  * Estados del flujo:
@@ -12,6 +14,25 @@ import { ScannerViewType, ScannerViewProps } from "./types";
  */
 const withScannerController = (View: ScannerViewType) =>
   function Controller(): JSX.Element {
+    const audioContextRef = useRef<AudioContext>(
+      new (window.AudioContext || (window as any).webkitAudioContext)()
+    );
+    const beepBufferRef = useRef<AudioBuffer | null>(null);
+
+    // Cargar el sonido una sola vez:
+    useEffect(() => {
+      fetch("/assets/beep.mp3")
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) =>
+          audioContextRef.current.decodeAudioData(arrayBuffer)
+        )
+        .then((audioBuffer) => {
+          beepBufferRef.current = audioBuffer;
+        })
+        .catch((error) =>
+          console.error("Error loading beep sound with Web Audio API:", error)
+        );
+    }, []);
     const [wizardStep, setWizardStep] = useState<number>(1);
     const [scanningLock, setScanningLock] = useState<boolean>(false);
     const wizardStepRef = useRef(wizardStep);
@@ -68,6 +89,21 @@ const withScannerController = (View: ScannerViewType) =>
       }, 2000);
     };
 
+    // Función para reproducir el beep usando Web Audio API:
+    const playBeep = () => {
+      const audioContext = audioContextRef.current;
+      // Reanudar el contexto si está suspendido (necesario tras una interacción del usuario)
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+      if (beepBufferRef.current) {
+        const source = audioContext.createBufferSource();
+        source.buffer = beepBufferRef.current;
+        source.connect(audioContext.destination);
+        source.start();
+      }
+    };
+
     // Procesa cada ítem (válido en pasos 4 y 5)
     const handleScanItem = (data: string) => {
       if (wizardStepRef.current < 4 || wizardStepRef.current >= 6) return;
@@ -77,10 +113,11 @@ const withScannerController = (View: ScannerViewType) =>
       scannedCodes.add(data);
 
       // Reproducir beep (puedes ajustar la ruta o método)
-      const audio = new Audio("/assets/beep.mp3");
-      audio.play().catch(console.error);
+      playBeep();
 
       setItemsQR((prev) => [...prev, data]);
+      console.log(itemsQR);
+      sendTransaction(data);
       setTotalCircoins((prev) => prev + 5);
 
       // Si estaba en step 4, se pasa a 5 (para mostrar el resumen)
@@ -89,6 +126,34 @@ const withScannerController = (View: ScannerViewType) =>
       }
       // Bloqueamos el escáner durante 1s para evitar lecturas repetidas
       lockScanner(1000);
+    };
+
+    const sendTransaction = async (containerId: string) => {
+      if (!MiniKit.isInstalled()) {
+        console.log("MiniKit not installed");
+        return;
+      }
+
+      const args = [containerId];
+
+      const { commandPayload, finalPayload } =
+        await MiniKit.commandsAsync.sendTransaction({
+          transaction: [
+            {
+              address: CONTRACT_ADDRESS,
+              abi: JSON.stringify(CONTRACT_ABI) as any,
+              functionName: "recycleContainer",
+              args: args,
+            },
+          ],
+        });
+      console.log("commandPayload", commandPayload, finalPayload);
+
+      // if (payload.status === 'error') {
+      // 	console.error('Error sending transaction', payload)
+      // } else {
+      // 	setTransactionId(payload.transaction_id)
+      // }
     };
 
     // Acción final: simula envío al backend y muestra éxito (step 6)
