@@ -200,8 +200,9 @@ const ScannerView: ScannerViewType = ({
               Scan Again
             </Button>
             <Button
-              className="border border-gray-300  bg-white text-green-600"
+              className=" border border-gray-300  bg-white "
               width="w-[150px]"
+              variant="secondary"
               onClick={() => router.push("/recycler/home")}
             >
               Back Home →

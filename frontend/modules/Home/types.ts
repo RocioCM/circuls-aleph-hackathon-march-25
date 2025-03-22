@@ -3,9 +3,6 @@
 export interface HomeViewProps {
   metrics: Metrics;
   historialData: RecyclingHistoryItem[];
-  handleWhatsAppClick: () => void;
-  handleInstagramClick: () => void;
-  handleLinkedInClick: () => void;
 
   // Variables de dinero (saldo)
   mainBalance: string; // ej: "100"

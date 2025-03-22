@@ -18,6 +18,7 @@ import {
   IVerifyResponse,
 } from "@worldcoin/minikit-js";
 import { Button } from "@worldcoin/mini-apps-ui-kit-react";
+import Toast from "@/common/components/Toast";
 
 export type VerifyCommandInput = {
   action: string;
@@ -93,61 +94,44 @@ const withHomeController = (View: HomeViewType) =>
     }, []);
 
     const [metrics, setMetrics] = useState<Metrics>({
-      co2: 0,
-      trees: 0,
-      water: 0,
-      energy: 0,
+      co2: 200,
+      trees: 2,
+      water: 10,
+      energy: 50,
     });
     const [historialData, setHistorialData] = useState<RecyclingHistoryItem[]>([
       {
-        id: 1,
-        status: "Reciclado",
-        createdAt: "2021-09-01",
-        updatedAt: "2021-09-01",
+        id: 10,
+        status: "2 bottles recycled",
+        createdAt: "2025-03-22",
+        updatedAt: "2025-03-22",
       },
       {
-        id: 2,
-        status: "Reciclado",
-        createdAt: "2021-09-01",
-        updatedAt: "2021-09-01",
+        id: 20,
+        status: "2 bottles and 2 cans recycled",
+        createdAt: "2025-03-22",
+        updatedAt: "2025-03-22",
       },
       {
-        id: 3,
-        status: "Reciclado",
-        createdAt: "2021-09-01",
-        updatedAt: "2021-09-01",
+        id: 5,
+        status: "1 can recycled",
+        createdAt: "2025-03-22",
+        updatedAt: "2025-03-22",
       },
     ]);
 
-    const fetchHistory = async () => {
-      // const { ok, data } = await HomeServices.getHistory();
-      // if (ok) {
-      //   setHistorialData(data ?? []);
-      // } else {
-      //   toast.error("Lo sentimos, ocurrió un error al cargar tu historial");
-      // }
-    };
+    const fetchHistory = async () => {};
 
-    const fetchMetrics = async () => {
-      // const { ok, data } = await HomeServices.getMetrics();
-      // if (ok) {
-      //   setMetrics(data);
-      // } else {
-      //   toast.error("Lo sentimos, ocurrió un error al cargar tus métricas");
-      // }
-    };
-
-    const handleWhatsAppClick = () => {};
-
-    const handleInstagramClick = () => {};
-
-    const handleLinkedInClick = () => {};
+    const fetchMetrics = async () => {};
 
     const onSendClick = () => {
-      router.push("/backoffice/producer");
+      //toast.error("Funcionalidad en desarrollo");
+      //router.push("/backoffice/producer");
     };
 
-    const onWithdrawClick = () => {};
+    const onWithdrawClick = () => {
+      //toast.error("Funcionalidad en desarrollo");
+    };
 
     const onScanClick = () => {
       handleVerify();
@@ -166,9 +150,6 @@ const withHomeController = (View: HomeViewType) =>
       onSendClick,
       onWithdrawClick,
       onScanClick,
-      handleWhatsAppClick,
-      handleInstagramClick,
-      handleLinkedInClick,
     };
 
     return <View {...viewProps} />;

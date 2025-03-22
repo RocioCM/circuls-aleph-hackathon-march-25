@@ -19,7 +19,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({
         <div>
           <Img
             src="/assets/tree.png"
-            alt="Árboles salvados"
+            alt="Trees saved"
             width={30}
             height={30}
             className="mx-auto"
@@ -28,7 +28,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({
         </div>
 
         <div className="text-sm font-normal text-white leading-tight mt-1">
-          Árboles salvados
+          Trees saved
         </div>
       </div>
       <div className="text-center">
@@ -44,7 +44,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({
         </div>
 
         <div className="text-sm font-normal text-white leading-tight mt-1">
-          Agua ahorrada
+          Water Saved
         </div>
       </div>
       <div className="text-center">
@@ -60,7 +60,7 @@ const StatsComponent: React.FC<StatsComponentProps> = ({
         </div>
 
         <div className="text-sm font-normal text-white leading-tight mt-1">
-          Energía ahorrada
+          Energy Saved
         </div>
       </div>
     </div>
