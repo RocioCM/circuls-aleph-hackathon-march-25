@@ -143,7 +143,9 @@ const withHomeController = (View: HomeViewType) =>
 
     const handleLinkedInClick = () => {};
 
-    const onSendClick = () => {};
+    const onSendClick = () => {
+      router.push("/backoffice/producer");
+    };
 
     const onWithdrawClick = () => {};
 

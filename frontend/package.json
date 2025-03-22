@@ -11,6 +11,7 @@
   "dependencies": {
     "@worldcoin/mini-apps-ui-kit-react": "^0.0.6",
     "@worldcoin/minikit-js": "1.6.1",
+    "@yudiel/react-qr-scanner": "^2.2.1",
     "dayjs": "^1.11.13",
     "eruda": "^3.2.3",
     "ethers": "^6.13.5",
