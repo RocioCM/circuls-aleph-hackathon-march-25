@@ -29,6 +29,9 @@ contract CirculsDApp {
   /** Mapping of recycler addresses to their pending balances (amounts awaiting validation) */
   mapping(address => uint256) public pendingBalances;
 
+  /** Mapping of recycler addresses to their total balances (amounts that have been validated) */
+  mapping(address => uint256) public balances;
+
   /** Array of container IDs that have pending validation */
   uint256[] public pendingContainerIds;
 
@@ -59,6 +62,11 @@ contract CirculsDApp {
     uint256 indexed containerId,
     address indexed recycler
   );
+
+  /** Emitted when a user withdraws their balance */
+  event BalanceWithdrawn(address indexed recycler, uint256 amount);
+
+  // ---------- FUNCTIONS ---------- //
 
   /** Constructor assigns the contract deployer as the admin */
   constructor() {
@@ -140,6 +148,7 @@ contract CirculsDApp {
     uint256 amount = c.depositValue;
     address recycler = c.recycler;
     pendingBalances[recycler] -= amount;
+    balances[recycler] += amount;
 
     emit ContainerValidated(containerId, recycler, amount);
   }
@@ -160,6 +169,15 @@ contract CirculsDApp {
     pendingBalances[recycler] -= amount;
 
     emit ContainerRejected(containerId, recycler);
+  }
+
+  function widrawBalance(uint256 amount) external {
+    uint256 balance = balances[msg.sender];
+    require(balance >= amount, 'Not enough balance to withdraw');
+    balances[msg.sender] -= amount;
+    // In the future, transfer the amount to the user's wallet.
+
+    emit BalanceWithdrawn(msg.sender, amount);
   }
 
   /**
