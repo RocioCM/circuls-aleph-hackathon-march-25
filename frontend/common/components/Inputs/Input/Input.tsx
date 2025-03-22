@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import ErrorMessage from '../ErrorMessage';
-import { FormHandleChange } from '@/common/hooks/useForm/types';
+import {FormHandleChange} from '@/common/hooks/useForm/types';
 import cn from '@/common/utils/classNames';
 import styles from './Input.module.css';
-import { useErrorMessage } from '@/common/hooks/useForm';
+import {useErrorMessage} from '@/common/hooks/useForm';
 
 const LABEL_STYLE = {
   base: 'text-p mb-xs',
@@ -16,7 +16,7 @@ const LABEL_STYLE = {
 const ABSOLUTE_CHILDREN_STYLE = 'gap-xs';
 
 const INPUT_STYLE = {
-  base: 'p rounded-rs bg-n1 px-m py-m placeholder:text-n3', // TIP: For only bottom border use: 'rounded-none border-0 border-b'
+  base: 'p rounded-rs bg-n1 px-m py-m placeholder:text-n3 h-[3.75rem]', // TIP: For only bottom border use: 'rounded-none border-0 border-b'
   hover: 'hover:border-n2',
   focus: cn(styles.inputFocus, 'focus:border-p1'),
   disabled:
@@ -66,7 +66,7 @@ const Input: React.FC<Props> = ({
 }) => {
   const [floatLabel, setFloatLabel] = useState(false); // True when label is floating on top of input. False when label is inside input.
   const inputRef = useRef<HTMLInputElement>(null);
-  const { allowRenderError, errorMessage: renderErrorMessage } =
+  const {allowRenderError, errorMessage: renderErrorMessage} =
     useErrorMessage(errorMessage); // Show error message conditionally after interaction.
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const Input: React.FC<Props> = ({
           placeholder={showFloatingLabel ? '' : placeholder}
           className={cn(
             styles.input, // Base
-            'block w-full h-max relative border outline-none transition-shadow', // Base
+            'block w-full relative border outline-none transition-shadow', // Base
             INPUT_STYLE.base, // Base custom
             INPUT_STYLE.hover, // Hover
             INPUT_STYLE.focus, // Focus

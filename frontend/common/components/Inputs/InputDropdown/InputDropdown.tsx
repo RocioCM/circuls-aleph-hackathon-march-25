@@ -1,6 +1,6 @@
-import { useRef, useState, FC, MouseEvent } from 'react';
+import {useRef, useState, FC, MouseEvent} from 'react';
 import ChevronIcon from '../../ChevronIcon';
-import { FormHandleChange } from '@/common/hooks/useForm/types';
+import {FormHandleChange} from '@/common/hooks/useForm/types';
 
 interface Option {
   label: string;
@@ -64,14 +64,16 @@ const InputDropdown: FC<InputDropdownProps> = ({
     : options.find((option) => option.value === value)?.label;
 
   return (
-    <div className={`${className} w-full h-[3.75rem] relative flex flex-col`}>
-      {inputLabel && !displayValue && (
-        <span className="block text-sm text-n6 px-s">{inputLabel}</span>
+    <div className={`${className} w-full h-max relative flex flex-col`}>
+      {inputLabel && (
+        <span className="block text-n6 px-s text-n10 font-semibold text-p mb-xs">
+          {inputLabel}
+        </span>
       )}
       <button
         ref={buttonRef}
-        className={`flex items-center gap-2 h-full w-full shadow-sm text-n6 text-left cursor-default justify-between px-l sm:text-sm ${
-          isDisabled ? 'bg-gray-100' : 'bg-transparent'
+        className={`flex items-center gap-2 h-[3.75rem] w-full shadow-sm text-n6 text-left cursor-default justify-between sm:text-sm p rounded-rs px-m py-m placeholder:text-n3 ${
+          isDisabled ? 'bg-gray-100' : 'bg-n1'
         }`}
         disabled={isDisabled}
         onClick={(e) => handleClick(e)}
@@ -85,7 +87,7 @@ const InputDropdown: FC<InputDropdownProps> = ({
       {showOptions && (
         <div
           className="absolute z-50 mt-1 w-full rounded-md bg-white shadow-lg max-h-60 overflow-auto"
-          style={{ top: '100%' }}
+          style={{top: '100%'}}
         >
           {options.map((option) => (
             <div
