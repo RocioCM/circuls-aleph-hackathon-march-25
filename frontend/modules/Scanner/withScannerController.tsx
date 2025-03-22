@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { ScannerViewType, ScannerViewProps } from "./types";
-import { MiniKit } from "@worldcoin/minikit-js";
+import { MiniKit, WalletAuthInput } from "@worldcoin/minikit-js";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
-
+import DEXABI from "@/common/constants/abi.json";
+// Ensure emitter is imported or defined
+import { EventEmitter } from "events";
 /**
  * Estados del flujo:
  * 1 - "Scan a CirculBin to Initialize..."
@@ -105,19 +107,17 @@ const withScannerController = (View: ScannerViewType) =>
     };
 
     // Procesa cada ítem (válido en pasos 4 y 5)
-    const handleScanItem = (data: string) => {
+    const handleScanItem = async (data: string) => {
       if (wizardStepRef.current < 4 || wizardStepRef.current >= 6) return;
       if (scanningLock) return;
       if (scannedCodes.has(data)) return;
-      console.log("Scanning item:", data, wizardStepRef.current, scanningLock);
+
       scannedCodes.add(data);
 
       // Reproducir beep (puedes ajustar la ruta o método)
       playBeep();
 
       setItemsQR((prev) => [...prev, data]);
-      console.log(itemsQR);
-      sendTransaction(data);
       setTotalCircoins((prev) => prev + 5);
 
       // Si estaba en step 4, se pasa a 5 (para mostrar el resumen)
@@ -128,20 +128,44 @@ const withScannerController = (View: ScannerViewType) =>
       lockScanner(1000);
     };
 
+    const walletAuthInput = (nonce: string): WalletAuthInput => {
+      return {
+        nonce,
+        requestId: "0",
+        expirationTime: new Date(
+          new Date().getTime() + 7 * 24 * 60 * 60 * 1000
+        ),
+        notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+        statement:
+          "This is my statement and here is a link https://worldcoin.com/apps",
+      };
+    };
+
     const sendTransaction = async (containerId: string) => {
       if (!MiniKit.isInstalled()) {
         console.log("MiniKit not installed");
         return;
       }
 
-      const args = [containerId];
+      const res = await fetch(`/api/nonce`);
+      const { nonce } = await res.json();
 
+      const {
+        commandPayload: generateMessageResult,
+        finalPayload: walletAuthFinalPayload,
+      } = await MiniKit.commandsAsync.walletAuth(walletAuthInput(nonce));
+
+      console.log("walletAuthFinalPayload", walletAuthFinalPayload);
+      console.log("generateMessageResult", generateMessageResult);
+
+      const args = [containerId];
+      console.log("args", args);
       const { commandPayload, finalPayload } =
         await MiniKit.commandsAsync.sendTransaction({
           transaction: [
             {
               address: CONTRACT_ADDRESS,
-              abi: JSON.stringify(CONTRACT_ABI) as any,
+              abi: DEXABI,
               functionName: "recycleContainer",
               args: args,
             },
@@ -149,19 +173,27 @@ const withScannerController = (View: ScannerViewType) =>
         });
       console.log("commandPayload", commandPayload, finalPayload);
 
-      // if (payload.status === 'error') {
-      // 	console.error('Error sending transaction', payload)
-      // } else {
-      // 	setTransactionId(payload.transaction_id)
-      // }
+      if (finalPayload.status === "error") {
+        console.error("Error sending transaction", finalPayload);
+      } else {
+        //setTransactionId(payload.transaction_id);
+      }
     };
 
+    const emitter = new EventEmitter();
+
+    emitter.on("miniapp-send-transaccion", (data) => {
+      // Lógica para manejar el evento
+      console.log("miniapp-send-transaccion", data);
+    });
+
     // Acción final: simula envío al backend y muestra éxito (step 6)
-    const finishScanning = () => {
-      console.log("Enviando al backend:");
-      console.log("Contenedor:", containerQR);
-      console.log("Ítems:", itemsQR);
-      console.log("Circoins:", totalCircoins);
+    const finishScanning = async () => {
+      itemsQR.forEach((item) => {
+        console.log("Item:", item);
+      });
+      // TODO hacer transaccion con todos los items
+      //await sendTransaction(data);
 
       setWizardStep(6);
     };

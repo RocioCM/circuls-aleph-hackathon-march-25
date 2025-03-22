@@ -1,65 +1,65 @@
-import { ButtonHTMLAttributes, FormEvent, useEffect, useState } from 'react';
-import { ImageProps } from 'next/image';
-import Img from '@/common/components/Img';
-import LoadingSpinner from '@/common/components/LoadingSpinner';
-import cn from '@/common/utils/classNames';
-import styles from './Button.module.css';
+import { ButtonHTMLAttributes, FormEvent, useEffect, useState } from "react";
+import { ImageProps } from "next/image";
+import Img from "@/common/components/Img";
+import LoadingSpinner from "@/common/components/LoadingSpinner";
+import cn from "@/common/utils/classNames";
+import styles from "./Button.module.css";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   handleClick?: (_e: FormEvent<HTMLButtonElement>) => any;
   className?: string;
   label?: string;
   children?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'simple';
-  size?: 'small' | 'default';
-  width?: 'auto' | 'full' | string;
-  iconStart?: ImageProps['src'] | null;
-  iconEnd?: ImageProps['src'] | null;
+  variant?: "primary" | "secondary" | "simple";
+  size?: "small" | "default";
+  width?: "auto" | "full" | string;
+  iconStart?: ImageProps["src"] | null;
+  iconEnd?: ImageProps["src"] | null;
   isLoading?: boolean;
   disabledLoading?: boolean;
 }
 
 const VARIANTS_STYLE = {
-  primary: 'bg-p1 text-n0 shadow-colored',
-  secondary: 'bg-n0 text-p2 border-p2 border',
-  simple: 'bg-transparent text-p1 underline',
+  primary: "bg-p1 text-n0 shadow-colored",
+  secondary: "bg-n0 text-p1 border-p2 border",
+  simple: "bg-transparent text-p1 underline",
 };
 
 const SIZES_STYLE = {
-  small: 'py-xs px-m',
-  default: 'py-m px-m',
+  small: "py-xs px-m",
+  default: "py-m px-m",
 };
 
 const WIDTH_STYLE: Record<string, string> = {
-  auto: 'w-max',
-  full: 'w-full',
+  auto: "w-max",
+  full: "w-full",
 };
 
 const STATUS_STYLE = {
-  base: 'gap-s rounded-full font-normal text-base h-12',
-  hover: '',
+  base: "gap-s rounded-full font-normal text-base h-12",
+  hover: "",
   focus: styles.focusButton,
   disabled:
-    'disabled:cursor-default disabled:bg-n2 disabled:text-n0 disabled:shadow-none',
+    "disabled:cursor-default disabled:bg-n2 disabled:text-n0 disabled:shadow-none",
 };
 
 const LOADING_STYLE = {
-  primary: '!border-n0',
-  secondary: 'border-p1',
-  simple: 'border-p1',
+  primary: "!border-n0",
+  secondary: "border-p1",
+  simple: "border-p1",
 };
 
 const ICON_STYLE = `w-5 h-5 object-contain shrink-0`;
 
 const Button = ({
   handleClick = () => {},
-  className = '',
+  className = "",
   label,
   children,
   disabled,
-  size = 'default',
-  variant = 'primary',
-  width = 'auto',
+  size = "default",
+  variant = "primary",
+  width = "auto",
   iconStart,
   iconEnd,
   isLoading: externalIsLoading,
@@ -69,7 +69,7 @@ const Button = ({
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
-    if (typeof externalIsLoading === 'boolean') {
+    if (typeof externalIsLoading === "boolean") {
       setShowLoading(externalIsLoading);
     }
   }, [externalIsLoading]);
@@ -92,7 +92,7 @@ const Button = ({
         className={cn(
           styles.loading,
           LOADING_STYLE[variant],
-          'absolute z-[1] mx-auto'
+          "absolute z-[1] mx-auto"
         )}
       ></LoadingSpinner>
     );
@@ -101,7 +101,7 @@ const Button = ({
   return (
     <button
       className={cn(
-        'relative flex items-center justify-center', // Base
+        "relative flex items-center justify-center", // Base
         STATUS_STYLE.base, // Base
         STATUS_STYLE.disabled, // Disabled
         STATUS_STYLE.focus, // Focus
@@ -128,7 +128,7 @@ const Button = ({
         />
       )}
       {!!label && <span>{label}</span>}
-      {typeof children === 'string' ? <span>{children}</span> : children}
+      {typeof children === "string" ? <span>{children}</span> : children}
       {iconEnd && (
         <Img
           src={iconEnd}

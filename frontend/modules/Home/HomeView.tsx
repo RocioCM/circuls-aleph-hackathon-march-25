@@ -37,9 +37,6 @@ const HomeView: HomeViewType = ({
   onSendClick,
   onWithdrawClick,
   onScanClick,
-  handleWhatsAppClick,
-  handleInstagramClick,
-  handleLinkedInClick,
 }) => {
   // Estados para plegar/desplegar secciones
   const [impactOpen, setImpactOpen] = useState<boolean>(true);
@@ -126,7 +123,7 @@ const HomeView: HomeViewType = ({
             />
             <div className="flex flex-col">
               <p className="text-xs font-light">
-                Period of recycling verification
+                Pending of recycling verification
               </p>
               <p className="text-[0.5rem] text-[#808080] font-light">
                 15 minutes ago
