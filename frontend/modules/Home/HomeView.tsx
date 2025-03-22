@@ -47,7 +47,7 @@ const HomeView: HomeViewType = ({
 
   return (
     <View className="relative min-h-screen w-full bg-white">
-      <div className="flex flex-col p-4 pt-12">
+      <div className="flex flex-col p-4 pt-12 mt-5">
         {/* Sección de Saldo */}
         <div className="flex flex-col items-center gap-1">
           <div className="flex items-center gap-1">
@@ -116,7 +116,7 @@ const HomeView: HomeViewType = ({
         </div>
 
         {/* Card: Period of recycling verification */}
-        <div className="border rounded-md flex items-center justify-between px-s py-m my-xl">
+        <div className="border rounded-rs flex items-center justify-between px-s py-m my-xl">
           <div className="flex items-center gap-m">
             <Img
               src="/assets/circulsverde.png"
@@ -146,7 +146,7 @@ const HomeView: HomeViewType = ({
         </div>
 
         {/* Sección Impact (plegable) */}
-        <div>
+        <div className="pb-xl">
           <button
             onClick={() => setImpactOpen(!impactOpen)}
             className="w-full flex items-center justify-between pb-xl focus:outline-none"
@@ -199,7 +199,7 @@ const HomeView: HomeViewType = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <Img
                         src="/assets/circulsnegro.png"
                         alt="Circoins"

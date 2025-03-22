@@ -1,40 +1,105 @@
 import { useState } from "react";
 import { ScannerViewType, ScannerViewProps } from "./types";
 
+/**
+ * Estados del flujo:
+ * 1 - "Scan a CirculBin to Initialize..."
+ * 2 - "Syncing with CirculBin"
+ * 3 - "Synchronized"
+ * 4 - "Start scanning Items..."
+ * 5 - "X items scanned..."
+ * 6 - "Success screen"
+ */
 const withScannerController = (View: ScannerViewType) =>
   function Controller(): JSX.Element {
-    // Paso 1: escanear contenedor; Paso 2: escanear ítems.
-    const [currentStep, setCurrentStep] = useState<number>(1);
-    const [containerQR, setContainerQR] = useState<string>("");
-    const [itemsQR, setItemsQR] = useState<string[]>([]);
+    const [wizardStep, setWizardStep] = useState<number>(1); // controla los 6 pasos
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    // Guarda el QR del contenedor y cambia de paso.
+    // Datos del contenedor (cuando escaneamos CirculBin)
+    const [containerQR, setContainerQR] = useState<string>("");
+
+    // Datos de ítems
+    const [itemsQR, setItemsQR] = useState<string[]>([]);
+    // Ejemplo: total Circoins. Lo podrías calcular en base a los ítems:
+    const [totalCircoins, setTotalCircoins] = useState<number>(0);
+
+    // Escanear contenedor CirculBin:
     const handleScanContainer = (data: string) => {
-      setContainerQR(data);
-      setCurrentStep(2);
+      // Paso 1 => 2 => 3 => 4
+      if (wizardStep === 1) {
+        // Si detectamos un QR, pasamos a "Syncing with CirculBin"
+        setWizardStep(2);
+        // "Leemos la información", simulado con un setTimeout
+        setIsLoading(true);
+        setTimeout(() => {
+          // Una vez "sincronizado"
+          setContainerQR(data);
+          setIsLoading(false);
+          setWizardStep(3);
+          // Esperamos 1 segundo y pasamos a step 4
+          setTimeout(() => {
+            setWizardStep(4);
+          }, 1000);
+        }, 2000);
+      }
     };
 
-    // Guarda cada QR de ítems escaneados.
+    // Empieza a escanear ítems (paso 4 => 5)
+    // Cada ítem leído disparará beep + se acumula en itemsQR
     const handleScanItem = (data: string) => {
-      setItemsQR((prev) => [...prev, data]);
+      if (wizardStep >= 4 && wizardStep < 6) {
+        // Reproducir beep (opcional):
+        const audio = new Audio("/assets/beep.mp3");
+        audio.play().catch(console.error);
+
+        // Acumula el item
+        setItemsQR((prev) => [...prev, data]);
+        // Suma circoins, p.ej. 5 por item:
+        setTotalCircoins((prev) => prev + 5);
+
+        // Cambiamos a paso 5, si aún no está
+        if (wizardStep < 5) {
+          setWizardStep(5);
+        }
+      }
     };
 
-    // Acción final (puede ser un submit, redirección, etc.).
+    // Acción final: enviar info al backend, mostrar success
     const finishScanning = () => {
-      console.log("Contenedor escaneado:", containerQR);
-      console.log("Ítems escaneados:", itemsQR);
-      alert("¡Proceso finalizado! Revisa la consola para más detalles.");
+      setIsLoading(true);
+      // Simular llamada al backend
+      setTimeout(() => {
+        console.log("Se envió al backend la siguiente info:");
+        console.log("Contenedor QR:", containerQR);
+        console.log("Ítems escaneados:", itemsQR);
+        console.log("Total Circoins:", totalCircoins);
+
+        // Pasamos al paso 6 (success)
+        setIsLoading(false);
+        setWizardStep(6);
+      }, 1500);
+    };
+
+    // Función para re-escanear / resetear
+    const scanAgain = () => {
+      // Reiniciamos todo el flujo
+      setWizardStep(1);
+      setContainerQR("");
+      setItemsQR([]);
+      setTotalCircoins(0);
+      setIsLoading(false);
     };
 
     const viewProps: ScannerViewProps = {
-      currentStep,
+      wizardStep,
+      isLoading,
       containerQR,
       itemsQR,
-      isLoading,
+      totalCircoins,
       handleScanContainer,
       handleScanItem,
       finishScanning,
+      scanAgain,
     };
 
     return <View {...viewProps} />;

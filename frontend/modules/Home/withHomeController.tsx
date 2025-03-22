@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   HomeViewType,
   HomeViewProps,
@@ -8,9 +8,90 @@ import {
 import { WHATSAPP_LINK } from "@/common/constants/contact";
 
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
+import {
+  MiniKit,
+  VerificationLevel,
+  ISuccessResult,
+  MiniAppVerifyActionErrorPayload,
+  IVerifyResponse,
+} from "@worldcoin/minikit-js";
+import { Button } from "@worldcoin/mini-apps-ui-kit-react";
+
+export type VerifyCommandInput = {
+  action: string;
+  signal?: string;
+  verification_level?: VerificationLevel; // Default: Orb
+};
+
+const verifyPayload: VerifyCommandInput = {
+  action: "log-in", // This is your action ID from the Developer Portal
+  signal: "",
+  verification_level: VerificationLevel.Orb, // Orb | Device
+};
 
 const withHomeController = (View: HomeViewType) =>
   function Controller(): JSX.Element {
+    const router = useRouter();
+
+    const [handleVerifyResponse, setHandleVerifyResponse] = useState<
+      MiniAppVerifyActionErrorPayload | IVerifyResponse | null
+    >(null);
+    const [verified, setVerified] = useState<boolean>(false);
+
+    const handleVerify = useCallback(async () => {
+      if (!MiniKit.isInstalled()) {
+        console.warn("Tried to invoke 'verify', but MiniKit is not installed.");
+        return;
+      }
+
+      const { finalPayload } = await MiniKit.commandsAsync.verify(
+        verifyPayload
+      );
+
+      // no need to verify if command errored
+      if (finalPayload.status === "error") {
+        console.log("Command error");
+        console.log(finalPayload);
+
+        setHandleVerifyResponse(finalPayload);
+        return finalPayload;
+      }
+
+      // Verify the proof in the backend
+      const verifyResponse = await fetch(`/api/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payload: finalPayload as ISuccessResult, // Parses only the fields we need to verify
+          action: verifyPayload.action,
+          signal: verifyPayload.signal, // Optional
+        }),
+      });
+
+      // TODO: Handle Success!
+      const verifyResponseJson = await verifyResponse.json();
+      setHandleVerifyResponse(verifyResponseJson);
+      if (verifyResponseJson.status === 200) {
+        router.push("/recycler/scanner");
+        console.log(finalPayload);
+        setVerified(true);
+      } else {
+        toast.error(
+          `Lo sentimos, ocurrió un error al verificar tu identidad ${JSON.stringify(
+            handleVerifyResponse,
+            null,
+            2
+          )}`
+        );
+      }
+
+      return verifyResponseJson;
+    }, []);
+
     const [metrics, setMetrics] = useState<Metrics>({
       co2: 0,
       trees: 0,
@@ -62,6 +143,14 @@ const withHomeController = (View: HomeViewType) =>
 
     const handleLinkedInClick = () => {};
 
+    const onSendClick = () => {};
+
+    const onWithdrawClick = () => {};
+
+    const onScanClick = () => {
+      handleVerify();
+    };
+
     useEffect(() => {
       fetchMetrics();
       fetchHistory();
@@ -72,9 +161,9 @@ const withHomeController = (View: HomeViewType) =>
       historialData,
       mainBalance: "100",
       balanceSubtitle: "Currently $2034,14",
-      onSendClick: () => {},
-      onWithdrawClick: () => {},
-      onScanClick: () => {},
+      onSendClick,
+      onWithdrawClick,
+      onScanClick,
       handleWhatsAppClick,
       handleInstagramClick,
       handleLinkedInClick,

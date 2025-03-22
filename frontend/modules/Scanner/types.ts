@@ -1,13 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
 
 export interface ScannerViewProps {
-  currentStep: number;
+  wizardStep: number;
+  isLoading: boolean;
   containerQR: string;
   itemsQR: string[];
-  isLoading: boolean;
+  totalCircoins: number;
   handleScanContainer: (data: string) => void;
   handleScanItem: (data: string) => void;
   finishScanning: () => void;
+  scanAgain: () => void;
 }
 
 export type ScannerViewType = (props: ScannerViewProps) => JSX.Element;
