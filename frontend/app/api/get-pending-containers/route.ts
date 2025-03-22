@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {ethers} from 'ethers';
-import {CONTRACT_ABI} from '@/common/constants/abi';
+import {CONTRACT_ABI, CONTRACT_ADDRESS} from '@/common/constants/abi';
 
 // This endpoint is not protected with authentication for demo purposes,
 // but in a real-world scenario, we will protect it to allow access only for authenticated producers.
@@ -9,7 +9,7 @@ export async function GET(_request: NextRequest) {
   try {
     const rpcUrl = process.env.RPC_URL;
     const privateKey = process.env.PRIVATE_KEY;
-    const contractAddress = process.env.CONTRACT_ADDRESS;
+    const contractAddress = CONTRACT_ADDRESS;
 
     if (!rpcUrl || !privateKey || !contractAddress) {
       return NextResponse.json(
