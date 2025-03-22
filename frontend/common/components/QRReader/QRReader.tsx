@@ -51,6 +51,7 @@ const QRReader: React.FC<QRReaderProps> = ({
           objectFit: "cover",
           margin: 0,
           padding: 0,
+          ...videoStyle,
         }}
       />
       {ViewFinder && <ViewFinder />}

@@ -19,9 +19,9 @@ const BackButton: React.FC<Props> = ({ onClick }) => {
   return (
     <button
       onClick={handleBack}
-      className="rounded-rm w-[3.125rem] h-[3.125rem] bg-n2 shrink-0 shadow-e1"
+      className="absolute z-10 rounded-rm w-[4rem] h-[4rem] bg-transparent shrink-0 "
     >
-      <ChevronIcon type="left" />
+      <ChevronIcon type="left" color="white" />
     </button>
   );
 };
