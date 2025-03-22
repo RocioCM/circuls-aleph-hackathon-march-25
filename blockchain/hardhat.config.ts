@@ -26,7 +26,7 @@ const config: HardhatUserConfig = {
 
     // MAINNET: World Chain
     worldChain: {
-      url: `https://worldchain-mainnet.g.alchemy.com/public`, // RPC url
+      url: `https://worldchain-mainnet.g.alchemy.com/v2/8feZkJ6vk4kZHppavhSoCrONwlJ4nn4i`, // RPC url
       chainId: 480,
       accounts: [`0x${getEnv('PRIVATE_KEY')}`],
     },
@@ -41,8 +41,17 @@ const config: HardhatUserConfig = {
     apiKey: {
       sepoliaEth: getEnv('ETHERSCAN_API_KEY'),
       worldChainSepolia: getEnv('ETHERSCAN_API_KEY'),
+      worldChain: getEnv('WORLDSCAN_API_KEY'),
     },
     customChains: [
+      {
+        network: 'worldChain',
+        chainId: 480,
+        urls: {
+          apiURL: 'https://api.worldscan.org/api',
+          browserURL: 'https://worldscan.org',
+        },
+      },
       {
         network: 'sepoliaEth',
         chainId: 11155111,

@@ -62,18 +62,14 @@ async function main() {
   const isRealNetwork = !!network && network !== 'localhost';
 
   // Deploy contracts
-  const baseContract = await deployContract(CONTRACT_NAME, [
-    getEnv('WLD_CONTRACT_ADDRESS'),
-  ]);
+  const baseContract = await deployContract(CONTRACT_NAME);
   const baseContractAddress = await baseContract.getAddress();
 
   // Verify contracts
   if (isRealNetwork) {
     logger.info('Verifying contracts...');
 
-    await verifyContract(CONTRACT_NAME, baseContract, [
-      getEnv('WLD_CONTRACT_ADDRESS'),
-    ]);
+    await verifyContract(CONTRACT_NAME, baseContract);
   }
 
   logger.info("Contract's addresses:");
