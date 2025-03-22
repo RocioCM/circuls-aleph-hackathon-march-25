@@ -99,7 +99,7 @@ contract CirculsDApp {
    * until the admin validates the container.
    * @param containerId The unique identifier of the container to recycle.
    */
-  function recycleContainer(uint256 containerId) external {
+  function recycleContainer(uint256 containerId) public {
     Container storage c = containers[containerId];
     require(c.producer != address(0), 'Container does not exist');
     require(
@@ -113,6 +113,17 @@ contract CirculsDApp {
     pendingContainerIds.push(containerId);
 
     emit ContainerRecycled(containerId, msg.sender);
+  }
+
+  /**
+   * Called by a user to recycle multiple containers. This action increases the user's pending balance
+   * until the admin validates the containers.
+   * @param containerIds - An array of container IDs to recycle
+   */
+  function recycleMultipleContainers(uint256[] memory containerIds) external {
+    for (uint256 i = 0; i < containerIds.length; i++) {
+      recycleContainer(containerIds[i]);
+    }
   }
 
   /**
