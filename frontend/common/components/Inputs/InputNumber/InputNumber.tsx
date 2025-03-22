@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import Input, { InputProps } from '../Input';
+import {useRef} from 'react';
+import Input, {InputProps} from '../Input';
 
 interface Props extends Omit<InputProps, 'value' | 'type'> {
   value?: number | '';
@@ -57,6 +57,9 @@ const InputNumber: React.FC<Props> = ({
         }
 
         lastKey.current = e.key;
+        if (props.onKeyDown) {
+          props.onKeyDown(e);
+        }
       }}
     />
   );

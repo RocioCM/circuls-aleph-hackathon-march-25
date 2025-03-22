@@ -1,4 +1,5 @@
-import { ToastContainer } from 'react-toastify';
+'use client';
+import {ToastContainer} from 'react-toastify';
 import Img from '@/common/components/Img';
 import cn from '@/common/utils/classNames';
 import iconInfo from '@/public/assets/icon-toast-info.svg';

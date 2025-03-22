@@ -1,57 +1,20 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ProducerViewType} from './types';
-import Input from '@/common/components/Inputs/Input';
 import InputDropdown from '@/common/components/Inputs/InputDropdown';
 import Button from '@/common/components/Button';
-import {CONTRACT_ABI, CONTRACT_ADDRESS} from '@/common/constants/abi';
-import {MiniKit} from '@worldcoin/minikit-js';
+import InputNumber from '@/common/components/Inputs/InputNumber';
+import withProducerController from './withProducerController';
 
-const ProducerView: ProducerViewType = ({}) => {
-  const [codes, setCodes] = useState<{code: string; deposit: number}[]>([]);
-  const [code, setCode] = useState<string>('');
-  const [deposit, setDeposit] = useState<number>(1);
-
-  const handleAdd = () => {
-    if (code.length && !codes.some(({code: c}) => c === code)) {
-      setCodes((prev) => [...prev, {code, deposit}]);
-      setCode('');
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (codes.length) {
-      for (const c of codes) {
-        await sendTransaction(c.code, c.deposit);
-      }
-    }
-  };
-
-  const sendTransaction = async (code: string, deposit: number) => {
-    if (!MiniKit.isInstalled()) {
-      console.log('MiniKit not installed');
-      return;
-    }
-
-    const {commandPayload, finalPayload} =
-      await MiniKit.commandsAsync.sendTransaction({
-        transaction: [
-          {
-            address: CONTRACT_ADDRESS,
-            abi: CONTRACT_ABI,
-            functionName: 'registerContainer',
-            args: [code, deposit],
-          },
-        ],
-      });
-    console.log('commandPayload', commandPayload, finalPayload);
-
-    // if (payload.status === 'error') {
-    // 	console.error('Error sending transaction', payload)
-    // } else {
-    // 	setTransactionId(payload.transaction_id)
-    // }
-  };
-
+const ProducerView: ProducerViewType = ({
+  code,
+  setCode,
+  deposit,
+  setDeposit,
+  codes,
+  setCodes,
+  handleSubmit,
+  handleAdd,
+}) => {
   return (
     <main className="h-screen w-full max-w-[700px] px-3xl py-3xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Producer</h1>
@@ -61,8 +24,8 @@ const ProducerView: ProducerViewType = ({}) => {
         blockchain associated with their respective deposit.
       </p>
       <div className="flex gap-4 items-end">
-        <Input
-          placeholder="ABC123"
+        <InputNumber
+          placeholder="123456"
           label="Unique ID"
           showFloatingLabel={false}
           name="code"
@@ -80,9 +43,9 @@ const ProducerView: ProducerViewType = ({}) => {
           value={deposit}
           name="deposit"
           options={[
-            {label: '1 Circoin', value: 1},
-            {label: '1.25 Circoins', value: 1.25},
-            {label: '1.5 Circoins', value: 1.5},
+            {label: '1 Circoin', value: 100},
+            {label: '1.25 Circoins', value: 125},
+            {label: '1.5 Circoins', value: 150},
           ]}
           className="!w-[40%]"
         />
@@ -110,7 +73,9 @@ const ProducerView: ProducerViewType = ({}) => {
               <button
                 className="ml-auto"
                 onClick={() => {
-                  setCodes((prev) => prev.filter((item) => item !== c));
+                  setCodes((prev: {code: number; deposit: number}[]) =>
+                    prev.filter((item) => item.code !== c.code)
+                  );
                 }}
               >
                 X
@@ -133,4 +98,4 @@ const ProducerView: ProducerViewType = ({}) => {
   );
 };
 
-export default ProducerView;
+export default withProducerController(ProducerView);
