@@ -17,13 +17,6 @@ const config: HardhatUserConfig = {
       url: 'http://127.0.0.1:8545',
     },
 
-    // TESTNET: World Chain Sepolia
-    worldChainSepolia: {
-      url: `https://worldchain-sepolia.g.alchemy.com/public`, // RPC url
-      chainId: 4801,
-      accounts: [`0x${getEnv('PRIVATE_KEY')}`],
-    },
-
     // MAINNET: World Chain
     worldChain: {
       url: `https://worldchain-mainnet.g.alchemy.com/v2/8feZkJ6vk4kZHppavhSoCrONwlJ4nn4i`, // RPC url
@@ -31,6 +24,7 @@ const config: HardhatUserConfig = {
       accounts: [`0x${getEnv('PRIVATE_KEY')}`],
     },
 
+    // TESTNET: Sepolia Ethereum
     sepoliaEth: {
       url: 'https://sepolia.drpc.org',
       chainId: 11155111,
@@ -40,7 +34,6 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       sepoliaEth: getEnv('ETHERSCAN_API_KEY'),
-      worldChainSepolia: getEnv('ETHERSCAN_API_KEY'),
       worldChain: getEnv('WORLDSCAN_API_KEY'),
     },
     customChains: [
@@ -58,14 +51,6 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: 'https://api-sepolia.etherscan.io/api',
           browserURL: 'https://sepolia.etherscan.io',
-        },
-      },
-      {
-        network: 'worldChainSepolia',
-        chainId: 4801,
-        urls: {
-          apiURL: 'https://worldchain-sepolia.g.alchemy.com/v2',
-          browserURL: 'https://worldchain-sepolia.explorer.alchemy.com/',
         },
       },
     ],

@@ -3,7 +3,7 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import logger from '../utils/logger';
 import { getEnv } from '../utils/env';
 
-const CONTRACT_NAME = 'CirculsDApp';
+const CONTRACT_NAME = 'MyContract';
 
 type Contract = Awaited<
   ReturnType<HardhatRuntimeEnvironment['ethers']['deployContract']>

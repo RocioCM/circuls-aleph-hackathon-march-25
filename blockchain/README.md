@@ -1,13 +1,15 @@
 # Circuls Blockchain
 
+We have our contract deployed on World Chain Mainnet for the demo, you can check it on the World Explorer: [https://worldscan.org/address/0x76aFD8E56201A75D7C427424A074A99258C8aD6a](https://worldscan.org/address/0x76aFD8E56201A75D7C427424A074A99258C8aD6a)
+
 ## Network
 
-We use the Optimistic Ethereum network for this project. You can find more information about it [here](https://optimism.io/). You can find network configuration in the [hardhat.config.js](./hardhat.config.js) file.
+We use the Optimistic Ethereum and World Chain networks for this project. You can find more information about it [here for World](https://worldscan.org) and [here for Optimism](https://optimism.io/). You can find network configuration in the [hardhat.config.js](./hardhat.config.js) file.
 
 - Testnet: Optimism Sepolia
-- Mainnet: Optimism Mainnet
+- Mainnet: World Chain Mainnet
 
-Both networks use same Etherscan API key (env variable ETHERSCAN_API_KEY) for contract verification. The private key for the deployment account is stored in the .env file. The account should have enough funds on the network to deploy the contracts.
+Both networks use different Etherscan API keys for contract verification. The private key for the deployment account is stored in the .env file. The account should have enough funds on the network to deploy the contracts.
 
 ## Development
 
