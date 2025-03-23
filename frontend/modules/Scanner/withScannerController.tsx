@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from "react";
-import { ScannerViewType, ScannerViewProps } from "./types";
-import { MiniKit, WalletAuthInput } from "@worldcoin/minikit-js";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
-import DEXABI from "@/common/constants/abi.json";
+import {useState, useRef, useEffect} from 'react';
+import {ScannerViewType, ScannerViewProps} from './types';
+import {MiniKit, WalletAuthInput} from '@worldcoin/minikit-js';
+import {CONTRACT_ABI, CONTRACT_ADDRESS} from '@/common/constants/abi';
+import DEXABI from '@/common/constants/abi.json';
 // Ensure emitter is imported or defined
-import { EventEmitter } from "events";
+import {EventEmitter} from 'events';
 /**
  * Estados del flujo:
  * 1 - "Scan a CirculBin to Initialize..."
@@ -23,7 +23,7 @@ const withScannerController = (View: ScannerViewType) =>
 
     // Cargar el sonido una sola vez:
     useEffect(() => {
-      fetch("/assets/beep.mp3")
+      fetch('/assets/beep.mp3')
         .then((response) => response.arrayBuffer())
         .then((arrayBuffer) =>
           audioContextRef.current.decodeAudioData(arrayBuffer)
@@ -32,7 +32,7 @@ const withScannerController = (View: ScannerViewType) =>
           beepBufferRef.current = audioBuffer;
         })
         .catch((error) =>
-          console.error("Error loading beep sound with Web Audio API:", error)
+          console.error('Error loading beep sound with Web Audio API:', error)
         );
     }, []);
     const [wizardStep, setWizardStep] = useState<number>(1);
@@ -43,8 +43,8 @@ const withScannerController = (View: ScannerViewType) =>
     }, [wizardStep]);
 
     // Guardamos el contenedor en un ref para chequearlo de forma inmediata
-    const containerQRRef = useRef<string>("");
-    const [containerQR, setContainerQR] = useState<string>("");
+    const containerQRRef = useRef<string>('');
+    const [containerQR, setContainerQR] = useState<string>('');
 
     // Datos de ítems
     const [itemsQR, setItemsQR] = useState<string[]>([]);
@@ -67,7 +67,7 @@ const withScannerController = (View: ScannerViewType) =>
     const handleScanContainer = (data: string) => {
       if (wizardStep !== 1) return;
       // Si ya se capturó el contenedor (inmediatamente en el ref), ignoramos
-      if (containerQRRef.current !== "") return;
+      if (containerQRRef.current !== '') return;
       if (scannedCodes.has(data)) return;
 
       scannedCodes.add(data);
@@ -95,7 +95,7 @@ const withScannerController = (View: ScannerViewType) =>
     const playBeep = () => {
       const audioContext = audioContextRef.current;
       // Reanudar el contexto si está suspendido (necesario tras una interacción del usuario)
-      if (audioContext.state === "suspended") {
+      if (audioContext.state === 'suspended') {
         audioContext.resume();
       }
       if (beepBufferRef.current) {
@@ -131,47 +131,56 @@ const withScannerController = (View: ScannerViewType) =>
     const walletAuthInput = (nonce: string): WalletAuthInput => {
       return {
         nonce,
-        requestId: "0",
+        requestId: '0',
         expirationTime: new Date(
           new Date().getTime() + 7 * 24 * 60 * 60 * 1000
         ),
         notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
         statement:
-          "This is my statement and here is a link https://worldcoin.com/apps",
+          'This is my statement and here is a link https://worldcoin.com/apps',
       };
     };
 
-    const sendTransaction = async (containerIds: string[]) => {
+    const sendTransaction = async (containersKeys: string[]) => {
       if (!MiniKit.isInstalled()) {
-        console.log("MiniKit not installed");
+        console.log('MiniKit not installed');
         return;
       }
 
       const res = await fetch(`/api/nonce`);
-      const { nonce } = await res.json();
+      const {nonce} = await res.json();
 
       const {
         commandPayload: generateMessageResult,
         finalPayload: walletAuthFinalPayload,
       } = await MiniKit.commandsAsync.walletAuth(walletAuthInput(nonce));
 
+      const containersKeysMapping: any = {
+        'https://cubepunks.carrd.co/': '1010',
+        'https://linktr.ee/ForestMakerX': '1014',
+        'https://dub.sh/FZfVDQV': '1015',
+      };
+
+      const containerIds = containersKeys.map(
+        (key) => containersKeysMapping[key]
+      );
       const args = [containerIds];
-      console.log("args", args);
-      const { commandPayload, finalPayload } =
+      console.log('args', args);
+      const {commandPayload, finalPayload} =
         await MiniKit.commandsAsync.sendTransaction({
           transaction: [
             {
               address: CONTRACT_ADDRESS,
               abi: DEXABI,
-              functionName: "recycleMultipleContainers",
+              functionName: 'recycleMultipleContainers',
               args: args,
             },
           ],
         });
-      console.log("commandPayload", commandPayload, finalPayload);
+      console.log('commandPayload', commandPayload, finalPayload);
 
-      if (finalPayload.status === "error") {
-        console.error("Error sending transaction", finalPayload);
+      if (finalPayload.status === 'error') {
+        console.error('Error sending transaction', finalPayload);
       } else {
         //setTransactionId(payload.transaction_id);
       }
@@ -179,9 +188,9 @@ const withScannerController = (View: ScannerViewType) =>
 
     const emitter = new EventEmitter();
 
-    emitter.on("miniapp-send-transaccion", (data) => {
+    emitter.on('miniapp-send-transaccion', (data) => {
       // Lógica para manejar el evento
-      console.log("miniapp-send-transaccion", data);
+      console.log('miniapp-send-transaccion', data);
     });
 
     // Acción final: simula envío al backend y muestra éxito (step 6)
@@ -198,8 +207,8 @@ const withScannerController = (View: ScannerViewType) =>
     const scanAgain = () => {
       setWizardStep(1);
       scannedCodes.clear();
-      containerQRRef.current = "";
-      setContainerQR("");
+      containerQRRef.current = '';
+      setContainerQR('');
       setItemsQR([]);
       setTotalCircoins(0);
       setScanningLock(false);
