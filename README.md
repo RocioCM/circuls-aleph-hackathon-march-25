@@ -28,21 +28,35 @@ We have our contract deployed on World Chain Mainnet, you can check it on the Wo
 
 Our solution is a digital deposit return system that leverages unique container IDs to ensure traceability and fair rewards. The high-level idea is that beverage producers generate unique codes (QR) for each container, deposit the required amount (in either WorldCoin or a custom token), and consumers earn a reward upon returning containers for recycling.
 
+### Business Model & Treasury 
+
+To understand the business model of this project, it is necessary to understand how the treasure moves. Below is a graphic that shows, step by step, the flow of treasure among the network's actors, based on deposit return scheme systems successfully executed in Europe.
+
+![Treasure Founds Flow](https://github.com/user-attachments/assets/145d6985-2374-4773-9cd1-72876987bad6)
+
 ### System Architecture
 
 Below is an overview of this demo components, illustrating how each actor interacts:
 
-/// TODO add actors image
+<img width="1720" alt="System scheme" src="https://github.com/user-attachments/assets/e3af27ef-20ae-4ad0-8001-d85ddad50b45" />
 
 1. **Producers**: Register each new container in the platform by generating and storing a unique code on-chain. They also deposit the corresponding reward (or “Circoins”) in a smart contract. In a real system, the user would pay this deposit when purchasing the product, but for the hackathon, we’ve assumed producers will fund the deposit upfront.
 2. **Consumers**: Use our WorldCoin MiniApp to scan both the recycling bin (Circul Bin) QR code and the container’s QR code, thereby initiating the recycling process and locking their rewards until validation.
 3. **Recycling Centers**: Validate incoming containers (manually or via computer vision in the future) and confirm the correct deposit of items. Upon validation, the rewards are released to the consumer’s wallet. On this demo, we have a backoffice interface for recycling centers to manually validate containers.
 
+#### Backoffice
+
+For demo purposes, we’ve built a backoffice interface to simulate the [producer](https://circuls-aleph-hackathon-march-25.vercel.app/backoffice/producer) and [recycling center](https://circuls-aleph-hackathon-march-25.vercel.app/backoffice/validator) roles. This interface allows producers to generate container IDs and deposit rewards, while recycling centers can validate containers and release rewards. In a real-world scenario, these actions would be automated or integrated with existing systems.
+
+| Producer Interface | Recycling Center Interface |
+| --- | --- |
+|![imagen](https://github.com/user-attachments/assets/632b9c2a-aec5-45c1-8bbc-2f899f3ae613) |![imagen](https://github.com/user-attachments/assets/564278ee-7f55-438e-9033-50527bf97777) |
+
 ### User Flow
 
 For our demo, we’ve focused on the core user journey, from sign in and onboarding to reward release. Here’s a step-by-step overview of the process:
 
-/// TODO: image
+<img width="1720" alt="User flow" src="https://github.com/user-attachments/assets/2e2d40a4-a07f-4bdd-8820-3ed7fc63c019" />
 
 1. **Onboarding**: Users learn how deposits work and how to earn rewards by scanning containers.
 2. **Sign In**: Users log in to the WorldCoin MiniApp using their World ID.
@@ -53,7 +67,7 @@ For our demo, we’ve focused on the core user journey, from sign in and onboard
 
 ## Future Tech Roadmap
 
-///TODO: add summary titles image
+<img width="1200" alt="Tech roadmap titles" src="https://github.com/user-attachments/assets/eb590226-e83a-407d-84c8-f506edd1537c" />
 
 This is a demo prototype, built over a weekend. However, the idea behind this product is contagious, and our team is determined to continue developing it after the hackathon to bring it to life. With that in mind, here are some technical considerations for the project's future:
 
