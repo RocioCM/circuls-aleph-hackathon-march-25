@@ -1,62 +1,20 @@
-import React, { useState } from "react";
-import { ProducerViewType } from "./types";
-import Input from "@/common/components/Inputs/Input";
-import InputDropdown from "@/common/components/Inputs/InputDropdown";
-import Button from "@/common/components/Button";
-import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
-import { MiniKit } from "@worldcoin/minikit-js";
-import InputNumber from "@/common/components/Inputs/InputNumber";
+import React from 'react';
+import {ProducerViewType} from './types';
+import InputDropdown from '@/common/components/Inputs/InputDropdown';
+import Button from '@/common/components/Button';
+import InputNumber from '@/common/components/Inputs/InputNumber';
+import withProducerController from './withProducerController';
 
-const ProducerView: ProducerViewType = ({}) => {
-  const [codes, setCodes] = useState<{ code: number; deposit: number }[]>([]);
-  const [code, setCode] = useState<number | "">("");
-  const [deposit, setDeposit] = useState<number>(1);
-
-  const handleAdd = () => {
-    if (code && !codes.some(({ code: c }) => c === code)) {
-      setCodes((prev) => [...prev, { code, deposit }]);
-      setCode("");
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (codes.length) {
-      for (const c of codes) {
-        await sendTransaction(c.code, c.deposit);
-      }
-    }
-  };
-
-  const sendTransaction = async (code: number, deposit: number) => {
-    if (!MiniKit.isInstalled()) {
-      console.log("MiniKit not installed");
-      return;
-    }
-
-    const args = [code.toString(), deposit.toString()];
-
-    console.log("args", args);
-
-    const { commandPayload, finalPayload } =
-      await MiniKit.commandsAsync.sendTransaction({
-        transaction: [
-          {
-            address: CONTRACT_ADDRESS,
-            abi: JSON.stringify(CONTRACT_ABI) as any,
-            functionName: "registerContainer",
-            args: args,
-          },
-        ],
-      });
-    console.log("commandPayload", commandPayload, finalPayload);
-
-    // if (payload.status === 'error') {
-    // 	console.error('Error sending transaction', payload)
-    // } else {
-    // 	setTransactionId(payload.transaction_id)
-    // }
-  };
-
+const ProducerView: ProducerViewType = ({
+  codes,
+  code,
+  deposit,
+  setCode,
+  setCodes,
+  setDeposit,
+  handleAdd,
+  handleSubmit,
+}) => {
   return (
     <main className="h-screen w-full max-w-[700px] px-3xl py-3xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Producer</h1>
@@ -74,7 +32,7 @@ const ProducerView: ProducerViewType = ({}) => {
           value={code}
           handleChange={(_, value) => setCode(value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               handleAdd();
             }
           }}
@@ -85,9 +43,9 @@ const ProducerView: ProducerViewType = ({}) => {
           value={deposit}
           name="deposit"
           options={[
-            { label: "1 Circoin", value: 1 },
-            { label: "1.25 Circoins", value: 1.25 },
-            { label: "1.5 Circoins", value: 1.5 },
+            {label: '1 Circoin', value: 100},
+            {label: '1.25 Circoins', value: 125},
+            {label: '1.5 Circoins', value: 150},
           ]}
           className="!w-[40%]"
         />
@@ -102,7 +60,7 @@ const ProducerView: ProducerViewType = ({}) => {
       </div>
 
       <div className="mt-4">
-        <h2>Códigos:</h2>
+        <h2>Unique IDs:</h2>
         <ul>
           {codes.map((c) => (
             <li
@@ -115,7 +73,9 @@ const ProducerView: ProducerViewType = ({}) => {
               <button
                 className="ml-auto"
                 onClick={() => {
-                  setCodes((prev) => prev.filter((item) => item !== c));
+                  setCodes((prev: {code: number}[]) =>
+                    prev.filter((item) => item.code !== c.code)
+                  );
                 }}
               >
                 X
@@ -138,4 +98,4 @@ const ProducerView: ProducerViewType = ({}) => {
   );
 };
 
-export default ProducerView;
+export default withProducerController(ProducerView);

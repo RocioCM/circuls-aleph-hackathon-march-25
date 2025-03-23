@@ -1,11 +1,11 @@
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import {cookies} from 'next/headers';
+import {NextRequest, NextResponse} from 'next/server';
 import {
   MiniAppWalletAuthSuccessPayload,
   verifySiweMessage,
-} from "@worldcoin/minikit-js";
-import { SignJWT } from "jose";
-import { nanoid } from "nanoid";
+} from '@worldcoin/minikit-js';
+import {SignJWT} from 'jose';
+import {nanoid} from 'nanoid';
 
 interface IRequestPayload {
   payload: MiniAppWalletAuthSuccessPayload;
@@ -25,13 +25,13 @@ async function findOrCreateUser(walletAddress: string) {
 }
 
 export const POST = async (req: NextRequest) => {
-  const { payload, nonce } = (await req.json()) as IRequestPayload;
+  const {payload, nonce} = (await req.json()) as IRequestPayload;
   const cookieStore = await cookies();
-  const siwe = cookieStore.get("siwe");
+  const siwe = cookieStore.get('siwe');
 
   if (nonce != siwe?.value) {
     return NextResponse.json({
-      status: "error",
+      status: 'error',
       isValid: false,
     });
   }
@@ -41,7 +41,7 @@ export const POST = async (req: NextRequest) => {
 
     if (!validMessage.isValid) {
       return NextResponse.json({
-        status: "error",
+        status: 'error',
         isValid: false,
       });
     }
@@ -53,25 +53,25 @@ export const POST = async (req: NextRequest) => {
       userId: user.id,
       walletAddress,
     })
-      .setProtectedHeader({ alg: "HS256" })
+      .setProtectedHeader({alg: 'HS256'})
       .setIssuedAt()
-      .setExpirationTime("7d")
+      .setExpirationTime('7d')
       .setJti(nanoid())
       .sign(
         new TextEncoder().encode(
-          process.env.JWT_SECRET || "fallback_secret_replace_in_production"
+          process.env.JWT_SECRET || 'fallback_secret_replace_in_production'
         )
       );
 
-    cookieStore.set("auth_token", token, {
+    cookieStore.set('auth_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: "/",
+      path: '/',
     });
 
     return NextResponse.json({
-      status: "success",
+      status: 'success',
       isValid: true,
       user: {
         id: user.id,
@@ -81,13 +81,12 @@ export const POST = async (req: NextRequest) => {
         isNewUser: user.isNewUser,
       },
     });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error) {
     // Handle errors in validation or processing
     return NextResponse.json({
-      status: "error",
+      status: 'error',
       isValid: false,
-      message: error.message,
+      message: (error as any).message,
     });
   }
 };

@@ -1,10 +1,7 @@
-"use client";
-import { useEffect, useState } from "react";
-import { MiniKit } from "@worldcoin/minikit-js";
-import { VerifyBlock } from "@/components/Verify";
-import { PayBlock } from "@/components/Pay";
-import { WalletAuth } from "@/components/WalletAuth";
-import Login from "@/modules/Login";
+'use client';
+import {useEffect, useState} from 'react';
+import {MiniKit} from '@worldcoin/minikit-js';
+import Login from '@/modules/Login';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
