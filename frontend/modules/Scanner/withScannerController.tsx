@@ -155,14 +155,17 @@ const withScannerController = (View: ScannerViewType) =>
         finalPayload: walletAuthFinalPayload,
       } = await MiniKit.commandsAsync.walletAuth(walletAuthInput(nonce));
 
-      const containersKeysMapping: any = {
-        'https://cubepunks.carrd.co/': '1010',
-        'https://linktr.ee/ForestMakerX': '1014',
-        'https://dub.sh/FZfVDQV': '1015',
-      };
+      const containersKeysMapping: any = [
+        '1010',
+        '1014',
+        '1015',
+        '1019',
+        '1012',
+        '1018',
+      ];
 
       const containerIds = containersKeys.map(
-        (key) => containersKeysMapping[key]
+        (_, i) => containersKeysMapping[i]
       );
       const args = [containerIds];
       console.log('args', args);
