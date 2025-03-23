@@ -33,7 +33,7 @@ const verifyPayload: VerifyCommandInput = {
 const withHomeController = (View: HomeViewType) =>
   function Controller(): JSX.Element {
     const router = useRouter();
-    const {user} = useUser();
+    const {walletAddress, username} = useUser();
     const [pendingBalances, setPendingBalances] = useState<number | null>(null);
     const [userBalance, setUserBalance] = useState<number | null>(null);
 
@@ -126,9 +126,8 @@ const withHomeController = (View: HomeViewType) =>
     const fetchUserPendingBalances = async () => {
       try {
         const response = await fetch(
-          `/api/get-user-pending-balances?address=${user?.walletAddress}`
+          `/api/get-user-pending-balances?address=${walletAddress}`
         );
-        console.log('data', response);
         const data = await response.json();
 
         if (data.success) {
@@ -140,9 +139,10 @@ const withHomeController = (View: HomeViewType) =>
     };
 
     const fetchUserBalance = async () => {
+      console.log('user', walletAddress);
       try {
         const response = await fetch(
-          `/api/get-user-balances?address=${user?.walletAddress}`
+          `/api/get-user-balances?address=${walletAddress}`
         );
         console.log('data', response);
         const data = await response.json();

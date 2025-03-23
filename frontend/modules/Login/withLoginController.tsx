@@ -20,7 +20,8 @@ const walletAuthInput = (nonce: string): WalletAuthInput => {
 const withLoginController = (View: LoginViewType) =>
   function Controller(): JSX.Element {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const { user, setUser } = useUser();
+    const { walletAddress, setWalletAddress, username, setUserName } =
+      useUser();
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -28,7 +29,8 @@ const withLoginController = (View: LoginViewType) =>
         await fetch("/api/auth/logout", {
           method: "POST",
         });
-        setUser(null);
+        setUserName(null);
+        setWalletAddress(null);
       } catch (error) {
         console.error("Logout error:", error);
       }
@@ -57,8 +59,10 @@ const withLoginController = (View: LoginViewType) =>
             }),
           });
           if (response.status === 200) {
-            setUser(MiniKit.user);
+            setWalletAddress(finalPayload.address);
+            setUserName(MiniKit.user?.username ?? null);
             console.log("User:", MiniKit.user);
+            console.log("address:", walletAddress);
             router.push("recycler/home");
           }
           setIsLoading(false);

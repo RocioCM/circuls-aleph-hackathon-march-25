@@ -1,23 +1,22 @@
 "use client";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-export type User = {
-  walletAddress: string;
-  username: string | null;
-  profilePictureUrl: string | null;
-};
-
 interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  walletAddress: string | null;
+  username: string | null;
+  setWalletAddress: (walletAddress: string | null) => void;
+  setUserName: (name: string | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [username, setUserName] = useState<string | null>(null);
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider
+      value={{ walletAddress, username, setWalletAddress, setUserName }}
+    >
       {children}
     </UserContext.Provider>
   );
