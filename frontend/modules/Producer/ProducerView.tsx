@@ -1,20 +1,62 @@
-import React from 'react';
-import {ProducerViewType} from './types';
-import InputDropdown from '@/common/components/Inputs/InputDropdown';
-import Button from '@/common/components/Button';
-import InputNumber from '@/common/components/Inputs/InputNumber';
-import withProducerController from './withProducerController';
+import React, { useState } from "react";
+import { ProducerViewType } from "./types";
+import Input from "@/common/components/Inputs/Input";
+import InputDropdown from "@/common/components/Inputs/InputDropdown";
+import Button from "@/common/components/Button";
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "@/common/constants/abi";
+import { MiniKit } from "@worldcoin/minikit-js";
+import InputNumber from "@/common/components/Inputs/InputNumber";
 
-const ProducerView: ProducerViewType = ({
-  code,
-  setCode,
-  deposit,
-  setDeposit,
-  codes,
-  setCodes,
-  handleSubmit,
-  handleAdd,
-}) => {
+const ProducerView: ProducerViewType = ({}) => {
+  const [codes, setCodes] = useState<{ code: number; deposit: number }[]>([]);
+  const [code, setCode] = useState<number | "">("");
+  const [deposit, setDeposit] = useState<number>(1);
+
+  const handleAdd = () => {
+    if (code && !codes.some(({ code: c }) => c === code)) {
+      setCodes((prev) => [...prev, { code, deposit }]);
+      setCode("");
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (codes.length) {
+      for (const c of codes) {
+        await sendTransaction(c.code, c.deposit);
+      }
+    }
+  };
+
+  const sendTransaction = async (code: number, deposit: number) => {
+    if (!MiniKit.isInstalled()) {
+      console.log("MiniKit not installed");
+      return;
+    }
+
+    const args = [code.toString(), deposit.toString()];
+
+    console.log("args", args);
+
+    const { commandPayload, finalPayload } =
+      await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: CONTRACT_ADDRESS,
+            abi: JSON.stringify(CONTRACT_ABI) as any,
+            functionName: "registerContainer",
+            args: args,
+          },
+        ],
+      });
+    console.log("commandPayload", commandPayload, finalPayload);
+
+    // if (payload.status === 'error') {
+    // 	console.error('Error sending transaction', payload)
+    // } else {
+    // 	setTransactionId(payload.transaction_id)
+    // }
+  };
+
   return (
     <main className="h-screen w-full max-w-[700px] px-3xl py-3xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Producer</h1>
@@ -32,7 +74,7 @@ const ProducerView: ProducerViewType = ({
           value={code}
           handleChange={(_, value) => setCode(value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               handleAdd();
             }
           }}
@@ -43,9 +85,9 @@ const ProducerView: ProducerViewType = ({
           value={deposit}
           name="deposit"
           options={[
-            {label: '1 Circoin', value: 100},
-            {label: '1.25 Circoins', value: 125},
-            {label: '1.5 Circoins', value: 150},
+            { label: "1 Circoin", value: 1 },
+            { label: "1.25 Circoins", value: 1.25 },
+            { label: "1.5 Circoins", value: 1.5 },
           ]}
           className="!w-[40%]"
         />
@@ -73,9 +115,7 @@ const ProducerView: ProducerViewType = ({
               <button
                 className="ml-auto"
                 onClick={() => {
-                  setCodes((prev: {code: number; deposit: number}[]) =>
-                    prev.filter((item) => item.code !== c.code)
-                  );
+                  setCodes((prev) => prev.filter((item) => item !== c));
                 }}
               >
                 X
@@ -98,4 +138,4 @@ const ProducerView: ProducerViewType = ({
   );
 };
 
-export default withProducerController(ProducerView);
+export default ProducerView;

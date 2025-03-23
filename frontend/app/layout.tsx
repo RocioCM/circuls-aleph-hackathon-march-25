@@ -1,18 +1,19 @@
-import type {Metadata} from 'next';
-import {Sora} from 'next/font/google';
-import './globals.css';
-import MiniKitProvider from '@/components/minikit-provider';
-import dynamic from 'next/dynamic';
-import NextAuthProvider from '@/components/next-auth-provider';
-import Toast from '@/common/components/Toast';
-import '@worldcoin/mini-apps-ui-kit-react/styles.css';
-import 'react-toastify/dist/ReactToastify.css';
+import type { Metadata } from "next";
+import { Sora } from "next/font/google";
+import "./globals.css";
+import MiniKitProvider from "@/components/minikit-provider";
+import dynamic from "next/dynamic";
+import NextAuthProvider from "@/components/next-auth-provider";
+import Toast from "@/common/components/Toast";
+import "@worldcoin/mini-apps-ui-kit-react/styles.css";
+import "react-toastify/dist/ReactToastify.css";
+import { UserProvider } from "@/components/userContext";
 
-const sora = Sora({subsets: ['latin']});
+const sora = Sora({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'WLD101',
-  description: 'Template mini app for Worldcoin',
+  title: "WLD101",
+  description: "Template mini app for Worldcoin",
 };
 
 export default function RootLayout({
@@ -21,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const ErudaProvider = dynamic(
-    () => import('../components/Eruda').then((c) => c.ErudaProvider),
+    () => import("../components/Eruda").then((c) => c.ErudaProvider),
     {
       ssr: false,
     }
@@ -44,7 +45,9 @@ export default function RootLayout({
         <Toast />
         <NextAuthProvider>
           <ErudaProvider>
-            <MiniKitProvider>{children}</MiniKitProvider>
+            <MiniKitProvider>
+              <UserProvider>{children}</UserProvider>
+            </MiniKitProvider>
           </ErudaProvider>
         </NextAuthProvider>
       </body>

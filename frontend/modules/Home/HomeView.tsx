@@ -34,6 +34,7 @@ const HomeView: HomeViewType = ({
   historialData,
   mainBalance,
   balanceSubtitle,
+  pendingBalances,
   onSendClick,
   onWithdrawClick,
   onScanClick,
@@ -138,7 +139,7 @@ const HomeView: HomeViewType = ({
               width={12}
               height={12}
             />
-            <p className="text-xs font-medium">$35,14</p>
+            <p className="text-xs font-medium"> {pendingBalances}</p>
           </div>
         </div>
 

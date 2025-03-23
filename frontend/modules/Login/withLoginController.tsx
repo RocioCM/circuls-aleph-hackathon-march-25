@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { LoginViewType, LoginViewProps, User } from "./types";
 import { toast } from "react-toastify";
 import { MiniKit, WalletAuthInput } from "@worldcoin/minikit-js";
 import { Button } from "@worldcoin/mini-apps-ui-kit-react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/components/userContext";
 
 const walletAuthInput = (nonce: string): WalletAuthInput => {
   return {
@@ -19,35 +20,14 @@ const walletAuthInput = (nonce: string): WalletAuthInput => {
 const withLoginController = (View: LoginViewType) =>
   function Controller(): JSX.Element {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(false);
+    const { user, setUser } = useUser();
     const router = useRouter();
-
-    const refreshUserData = useCallback(async () => {
-      try {
-        const response = await fetch("/api/auth/me");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.user) {
-            setUser(data.user);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    }, []);
-
-    useEffect(() => {
-      refreshUserData();
-    }, [refreshUserData]);
 
     const handleLogout = async () => {
       try {
         await fetch("/api/auth/logout", {
           method: "POST",
         });
-
         setUser(null);
       } catch (error) {
         console.error("Logout error:", error);
@@ -55,38 +35,38 @@ const withLoginController = (View: LoginViewType) =>
     };
 
     const handleSubmit = async () => {
-      router.push("recycler/home");
-      // try {
-      //   setLoading(true);
-      //   const res = await fetch(`/api/nonce`);
-      //   const { nonce } = await res.json();
-      //   const { finalPayload } = await MiniKit.commandsAsync.walletAuth(
-      //     walletAuthInput(nonce)
-      //   );
-      //   if (finalPayload.status === "error") {
-      //     setLoading(false);
-      //     return;
-      //   } else {
-      //     const response = await fetch("/api/auth/login", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         payload: finalPayload,
-      //         nonce,
-      //       }),
-      //     });
-      //     if (response.status === 200) {
-      //       setUser(MiniKit.user);
-      //       router.push("/homeRecycler");
-      //     }
-      //     setLoading(false);
-      //   }
-      // } catch (error) {
-      //   console.error("Login error:", error);
-      //   setLoading(false);
-      // }
+      try {
+        setIsLoading(true);
+        const res = await fetch(`/api/nonce`);
+        const { nonce } = await res.json();
+        const { finalPayload } = await MiniKit.commandsAsync.walletAuth(
+          walletAuthInput(nonce)
+        );
+        if (finalPayload.status === "error") {
+          setIsLoading(false);
+          return;
+        } else {
+          const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              payload: finalPayload,
+              nonce,
+            }),
+          });
+          if (response.status === 200) {
+            setUser(MiniKit.user);
+            console.log("User:", MiniKit.user);
+            router.push("recycler/home");
+          }
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        setIsLoading(false);
+      }
     };
 
     const viewProps: LoginViewProps = {

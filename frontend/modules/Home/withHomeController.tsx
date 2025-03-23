@@ -19,6 +19,7 @@ import {
 } from "@worldcoin/minikit-js";
 import { Button } from "@worldcoin/mini-apps-ui-kit-react";
 import Toast from "@/common/components/Toast";
+import { useUser } from "@/components/userContext";
 
 export type VerifyCommandInput = {
   action: string;
@@ -35,6 +36,9 @@ const verifyPayload: VerifyCommandInput = {
 const withHomeController = (View: HomeViewType) =>
   function Controller(): JSX.Element {
     const router = useRouter();
+    const { user } = useUser();
+    const [pendingBalances, setPendingBalances] = useState<number | null>(null);
+    const [userBalance, setUserBalance] = useState<number | null>(null);
 
     const [handleVerifyResponse, setHandleVerifyResponse] = useState<
       MiniAppVerifyActionErrorPayload | IVerifyResponse | null
@@ -102,19 +106,19 @@ const withHomeController = (View: HomeViewType) =>
     const [historialData, setHistorialData] = useState<RecyclingHistoryItem[]>([
       {
         id: 10,
-        status: "2 bottles recycled",
+        status: "2 Bottles recycled",
         createdAt: "2025-03-22",
         updatedAt: "2025-03-22",
       },
       {
         id: 20,
-        status: "2 bottles and 2 cans recycled",
+        status: "2 Bottles and 2 cans recycled",
         createdAt: "2025-03-22",
         updatedAt: "2025-03-22",
       },
       {
         id: 5,
-        status: "1 can recycled",
+        status: "1 Can recycled",
         createdAt: "2025-03-22",
         updatedAt: "2025-03-22",
       },
@@ -123,6 +127,38 @@ const withHomeController = (View: HomeViewType) =>
     const fetchHistory = async () => {};
 
     const fetchMetrics = async () => {};
+
+    const fetchUserPendingBalances = async () => {
+      try {
+        const response = await fetch(
+          `/api/get-user-pending-balances?address=${user?.walletAddress}`
+        );
+        console.log("data", response);
+        const data = await response.json();
+
+        if (data.success) {
+          setPendingBalances(data.data ?? 0);
+        }
+      } catch (e) {
+        console.error("Error fetching user pending balances", e);
+      }
+    };
+
+    const fetchUserBalance = async () => {
+      try {
+        const response = await fetch(
+          `/api/get-user-balances?address=${user?.walletAddress}`
+        );
+        console.log("data", response);
+        const data = await response.json();
+
+        if (data.success) {
+          setUserBalance(data.data ?? 0);
+        }
+      } catch (e) {
+        console.error("Error fetching user pending balances", e);
+      }
+    };
 
     const onSendClick = () => {
       //toast.error("Funcionalidad en desarrollo");
@@ -140,13 +176,16 @@ const withHomeController = (View: HomeViewType) =>
     useEffect(() => {
       fetchMetrics();
       fetchHistory();
+      fetchUserPendingBalances();
+      fetchUserBalance();
     }, []);
 
     const viewProps: HomeViewProps = {
       metrics,
       historialData,
-      mainBalance: "100",
-      balanceSubtitle: "Currently $2034,14",
+      mainBalance: userBalance?.toString() ?? "0",
+      balanceSubtitle: `Currently $${((userBalance ?? 0) * 2).toString()} `,
+      pendingBalances: pendingBalances ?? 0,
       onSendClick,
       onWithdrawClick,
       onScanClick,

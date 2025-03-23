@@ -1,8 +1,5 @@
-import request from '@/common/services/request';
-import { Login } from './types';
+import { Login } from "./types";
 
-const LoginServices = {
-  get: () => request<Login>('/Login'),
-};
+const LoginServices = {};
 
 export default LoginServices;

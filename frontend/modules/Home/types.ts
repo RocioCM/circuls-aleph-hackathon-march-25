@@ -5,6 +5,7 @@ export interface HomeViewProps {
   historialData: RecyclingHistoryItem[];
 
   // Variables de dinero (saldo)
+  pendingBalances: number; // ej: 2034.14
   mainBalance: string; // ej: "100"
   balanceSubtitle: string; // ej: "Currently $2034,14"
 

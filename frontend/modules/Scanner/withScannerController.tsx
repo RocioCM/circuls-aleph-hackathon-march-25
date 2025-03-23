@@ -141,7 +141,7 @@ const withScannerController = (View: ScannerViewType) =>
       };
     };
 
-    const sendTransaction = async (containerId: string) => {
+    const sendTransaction = async (containerIds: string[]) => {
       if (!MiniKit.isInstalled()) {
         console.log("MiniKit not installed");
         return;
@@ -155,10 +155,7 @@ const withScannerController = (View: ScannerViewType) =>
         finalPayload: walletAuthFinalPayload,
       } = await MiniKit.commandsAsync.walletAuth(walletAuthInput(nonce));
 
-      console.log("walletAuthFinalPayload", walletAuthFinalPayload);
-      console.log("generateMessageResult", generateMessageResult);
-
-      const args = [containerId];
+      const args = [containerIds];
       console.log("args", args);
       const { commandPayload, finalPayload } =
         await MiniKit.commandsAsync.sendTransaction({
@@ -166,7 +163,7 @@ const withScannerController = (View: ScannerViewType) =>
             {
               address: CONTRACT_ADDRESS,
               abi: DEXABI,
-              functionName: "recycleContainer",
+              functionName: "recycleMultipleContainers",
               args: args,
             },
           ],
@@ -189,13 +186,12 @@ const withScannerController = (View: ScannerViewType) =>
 
     // Acción final: simula envío al backend y muestra éxito (step 6)
     const finishScanning = async () => {
-      itemsQR.forEach((item) => {
-        console.log("Item:", item);
-      });
       // TODO hacer transaccion con todos los items
-      //await sendTransaction(data);
+      await sendTransaction(itemsQR);
 
-      setWizardStep(6);
+      setTimeout(() => {
+        setWizardStep(6);
+      }, 3000);
     };
 
     // Reinicia todo el flujo
