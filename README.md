@@ -8,7 +8,7 @@
 
 Our mission is to build tools of mass restoration for nature, and we’re kicking things off with a focus on recycling.
 
-We discovered a proven solution that increases recycling rates, reduces litter, and makes a profit: the Deposit Return Scheme. You pay a small deposit when you buy soda, then return the container on the supermarket and get the deposit back. It’s been super successful in Europe, but it relay's reverse vending machines that are expensive and setting them up takes a ton of effort (often dragging in the government).
+We discovered a proven solution that increases recycling rates, reduces litter, and makes a profit: the Deposit Return Scheme. You pay a small deposit when you buy soda, then return the container on the supermarket and get the deposit back. It’s been super successful in Europe, but it rely's on reverse vending machines that are expensive and setting them up takes a ton of effort (often dragging in the government).
 
 To solve this problem, we decided to digitize the entire deposit system —no expensive machines, just an app that tracks every container, fights fraud, and makes it feasible for communities and countries from LATAM to adopt a deposit return scheme.
 
@@ -28,7 +28,7 @@ We have our contract deployed on World Chain Mainnet, you can check it on the Wo
 
 Our solution is a digital deposit return system that leverages unique container IDs to ensure traceability and fair rewards. The high-level idea is that beverage producers generate unique codes (QR) for each container, deposit the required amount (in either WorldCoin or a custom token), and consumers earn a reward upon returning containers for recycling.
 
-### Business Model & Treasury 
+### Business Model & Treasury
 
 To understand the business model of this project, it is necessary to understand how the treasure moves. Below is a graphic that shows, step by step, the flow of treasure among the network's actors, based on deposit return scheme systems successfully executed in Europe.
 
@@ -50,7 +50,7 @@ For demo purposes, we’ve built a backoffice interface to simulate the [produce
 
 | Producer Interface | Recycling Center Interface |
 | --- | --- |
-|![imagen](https://github.com/user-attachments/assets/632b9c2a-aec5-45c1-8bbc-2f899f3ae613) |![imagen](https://github.com/user-attachments/assets/564278ee-7f55-438e-9033-50527bf97777) |
+| ![imagen](https://github.com/user-attachments/assets/632b9c2a-aec5-45c1-8bbc-2f899f3ae613) | ![imagen](https://github.com/user-attachments/assets/564278ee-7f55-438e-9033-50527bf97777) |
 
 ### User Flow
 
